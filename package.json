@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "tsx watch src/server.ts",
+    "start:dev": "concurrently \"tsx watch src/server.ts\" \"npx prisma studio\"",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build"
   },
@@ -15,6 +15,7 @@
   "devDependencies": {
     "@eslint/js": "9.34.0",
     "@types/node": "^24.3.0",
+    "concurrently": "9.2.1",
     "eslint": "9.34.0",
     "globals": "16.3.0",
     "jiti": "2.5.1",
