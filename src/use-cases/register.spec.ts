@@ -1,24 +1,43 @@
 import { describe, expect, it } from 'vitest'
 import { RegisterUseCase } from './register'
 import { compare } from 'bcryptjs'
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users.repository'
+import { UserAlreadyExistsError } from './errors/user-already-exits.error'
 
 describe('Register Use Case', () => {
-  it("should hash user password upon registration", async () => {
-    const registerUseCase = new RegisterUseCase({
-      async findByEmail() {
-        return null;
-      },
+  it("should be able to register", async () => {
+    const usersRepository = new InMemoryUsersRepository()
+    const registerUseCase = new RegisterUseCase(usersRepository)
 
-      async create(data) {
-        return {
-          id: '1',
-          name: data.name,
-          email: data.email,
-          password_hash: data.password_hash,
-          created_at: new Date
-        }
-      },
-    })
+    const user = {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      password: '1234'
+    }
+
+    const { user: userCreated } = await registerUseCase.execute(user);
+
+    expect(userCreated.id).toEqual(expect.any(String))
+  })
+
+  it("should not be able to register with existing email", async () => {
+    const usersRepository = new InMemoryUsersRepository()
+    const registerUseCase = new RegisterUseCase(usersRepository)
+
+    const user = {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      password: '1234'
+    }
+
+    await registerUseCase.execute(user);
+
+    await expect(registerUseCase.execute(user)).rejects.toBeInstanceOf(UserAlreadyExistsError)
+  })
+
+  it("should hash user password upon registration", async () => {
+    const usersRepository = new InMemoryUsersRepository()
+    const registerUseCase = new RegisterUseCase(usersRepository)
 
     const { user } = await registerUseCase.execute({
       name: 'John Doe',
@@ -27,11 +46,7 @@ describe('Register Use Case', () => {
     });
 
     const isPasswordCorrectlyHashed = await compare('1234', user.password_hash)
-    console.log(user);
-    console.log(isPasswordCorrectlyHashed);
 
     expect(isPasswordCorrectlyHashed).toBe(true)
   })
-
-
 })
