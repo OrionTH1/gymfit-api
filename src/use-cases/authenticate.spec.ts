@@ -7,7 +7,7 @@ import { hash } from 'bcryptjs'
 describe('Authenticate Use Case', () => {
   it("should not be able to authenticate with wrong email", async () => {
     const usersRepository = new InMemoryUsersRepository()
-    const authenticateUseCase = new AuthenticateUseCase(usersRepository)
+    const sut = new AuthenticateUseCase(usersRepository)
 
     await usersRepository.create({
       name: 'John Doe',
@@ -16,21 +16,21 @@ describe('Authenticate Use Case', () => {
     })
     const userCredentials = { email: "wrongemail@example.com", password: "1234" }
 
-    await expect(authenticateUseCase.execute(userCredentials)).rejects.toBeInstanceOf(UserCredentialsInvalid)
+    await expect(sut.execute(userCredentials)).rejects.toBeInstanceOf(UserCredentialsInvalid)
   })
 
   it("should not be able to authenticate with wrong password", async () => {
     const usersRepository = new InMemoryUsersRepository()
-    const authenticateUseCase = new AuthenticateUseCase(usersRepository)
+    const sut = new AuthenticateUseCase(usersRepository)
 
     const userCredentials = { email: "john.doe@example.com", password: "wrongpassword" }
 
-    await expect(authenticateUseCase.execute(userCredentials)).rejects.toBeInstanceOf(UserCredentialsInvalid)
+    await expect(sut.execute(userCredentials)).rejects.toBeInstanceOf(UserCredentialsInvalid)
   })
 
   it("should be able to authenticate", async () => {
     const usersRepository = new InMemoryUsersRepository()
-    const authenticateUseCase = new AuthenticateUseCase(usersRepository)
+    const sut = new AuthenticateUseCase(usersRepository)
 
     await usersRepository.create({
       name: 'John Doe',
@@ -40,7 +40,7 @@ describe('Authenticate Use Case', () => {
 
     const userCredentials = { email: "john.doe@example.com", password: "1234" }
 
-    const { user } = await authenticateUseCase.execute(userCredentials)
+    const { user } = await sut.execute(userCredentials)
 
     expect(user.id).toEqual(expect.any(String))
   })
