@@ -5,7 +5,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 export class InMemoryGymsRepository implements GymsRepository {
   private gyms: Gym[] = [];
 
-  async create(gym: Prisma.GymCreateInput): Promise<Gym | null> {
+  async create(gym: Prisma.GymCreateInput): Promise<Gym> {
     const newGym = {
       id: gym.id || crypto.randomUUID(),
       title: gym.title,
