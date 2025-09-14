@@ -1,8 +1,8 @@
-import { InMemoryCheckInRepository } from '@/repositories/in-memory/check-in.repository'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CheckInUseCase } from './check-in'
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms.repository'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { InMemoryCheckInRepository } from '@/repositories/in-memory/in-memory-check-in.repository'
 
 let checkInRepository: InMemoryCheckInRepository
 let gymsRepository: InMemoryGymsRepository
